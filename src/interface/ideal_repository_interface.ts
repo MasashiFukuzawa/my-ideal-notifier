@@ -1,6 +1,6 @@
 interface IdealRepositoryInterface {
-  find(id: number): Ideal;
-  save(item: string): void;
-  update(id: number, item: string): void;
-  delete(id: number): void;
+  find(idealId: IdealId): Ideal;
+  findByItem(idealItem: IdealItem): Ideal;
+  save(idealItem: IdealItem): void;
+  delete(idealId: IdealId): void;
 }
