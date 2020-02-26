@@ -1,10 +1,10 @@
-class IdealRegisterCommand {
+class IdealCreateCommand {
   item: string;
   constructor(item: string) {
     this.item = item;
   }
 
-  getItem(): string {
+  getItem() {
     return this.item;
   }
 }

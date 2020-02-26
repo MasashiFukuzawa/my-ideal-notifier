@@ -4,7 +4,7 @@ class IdealDeleteCommand {
     this.id = id;
   }
 
-  getId(): string {
+  getId() {
     return this.id;
   }
 }
