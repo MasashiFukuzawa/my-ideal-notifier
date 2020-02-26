@@ -7,6 +7,16 @@ class IdealRepository implements IdealRepositoryInterface {
     this.itemService = itemService;
   }
 
+  getAll(): string[][] {
+    const ss: Spreadsheet = SpreadsheetApp.openById(
+      PropertiesService.getScriptProperties().getProperty("SPREAD_SHEET_ID")
+    );
+    const ws: Sheet = ss.getSheetByName("ideals");
+    const lastRow: number = ws.getLastRow();
+    const allItems: string[][] = ws.getRange(2, 1, lastRow - 1, 1).getValues();
+    return allItems;
+  }
+
   find(idealId: IdealId): Ideal {
     const ss: Spreadsheet = SpreadsheetApp.openById(
       PropertiesService.getScriptProperties().getProperty("SPREAD_SHEET_ID")
@@ -42,7 +52,7 @@ class IdealRepository implements IdealRepositoryInterface {
     return null;
   }
 
-  save(idealItem: IdealItem): void {
+  create(idealItem: IdealItem): void {
     if (this.itemService.exists(idealItem)) {
       console.log("このitemは既に存在しています。");
       return;
