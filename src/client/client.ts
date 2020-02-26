@@ -1,4 +1,4 @@
-class Client {
+class Client implements glFunctions.ClientInterface {
   constructor(
     private _idealApplicationService: IdealApplicationServiceInterface
   ) {}
