@@ -1,31 +1,48 @@
 declare var ideal: glFunctions.ClientInterface;
 
 function postMessages(): void {
-  const PUSH_URL: string = "https://api.line.me/v2/bot/message/push";
-  const items: string[][] = ideal.getAll();
-  const pushData: string[][] = setPushData(items);
-  const options = setOptions(pushData);
-  UrlFetchApp.fetch(PUSH_URL, options);
+  const items = ideal.getAll();
+  UrlFetchApp.fetch(LineConstants.PUSH_URL, setOptions(items));
 }
 
-function setPushData(items: string[][]): string[][] {
-  return;
+function setOptions(items: string[][]): object {
+  const postData = setPostData(items);
+  const options = {
+    "method": "post",
+    "headers": LineConstants.HEADERS,
+    "payload": JSON.stringify(postData)
+  };
+  return options;
 }
 
-function setOptions(data: string[][]): any {}
+function setPostData(items: string[][]): object {
+  const postData = {
+    "to": LineConstants.USER_ID,
+    "messages": [{
+      "type": "template",
+      "altText": "Today's mission statement",
+      "template": {
+        "type": "confirm",
+        "text": setText(items),
+        "actions": [
+          {
+              "type": "message",
+              "label": "OK",
+              "text": "Have a good day!"
+          },
+          {
+              "type": "message",
+              "label": "No thanks",
+              "text": "See you again!"
+          }
+        ],
+      },
+    }]
+  };
+  return postData;
+}
 
-function doPost(e): void {
-  const REPLY_URL: string = "https://api.line.me/v2/bot/message/reply";
-  const json: any = JSON.parse(e.postData.contents);
-  const events: any = json.events;
-
-  const recordSheet = Spreadsheet.setTargetSheet("records");
-
-  for (let i = 0; i < events.length; i++) {
-    if (events[i].type === "postback") {
-      _doPostbackAction(events[i], recordSheet);
-    } else if (events[i].type === "message") {
-      _doMessageAction(events[i], recordSheet);
-    }
-  }
+function setText(items: string[][]): string {
+  const randomNumber = Math.floor(Math.random() * items.length);
+  return items.map(i => i[0])[randomNumber];
 }
