@@ -1,7 +1,8 @@
+import { IdealRepositoryInterface } from '../interface/ideal/ideal_repository_interface';
 import Spreadsheet = GoogleAppsScript.Spreadsheet.Spreadsheet;
 import Sheet = GoogleAppsScript.Spreadsheet.Sheet;
 
-class IdealRepository implements IdealRepositoryInterface {
+export class IdealRepository implements IdealRepositoryInterface {
   getAll(): string[][] {
     const ss: Spreadsheet = SpreadsheetApp.openById(
       PropertiesService.getScriptProperties().getProperty("SPREAD_SHEET_ID")

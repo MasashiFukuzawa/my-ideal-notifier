@@ -1,3 +1,3 @@
-interface IdealRepositoryInterface {
+export interface IdealRepositoryInterface {
   getAll(): string[][];
 }

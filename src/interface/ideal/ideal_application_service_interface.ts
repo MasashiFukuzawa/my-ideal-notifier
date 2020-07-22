@@ -1,3 +1,3 @@
-interface IdealApplicationServiceInterface {
+export interface IdealApplicationServiceInterface {
   getAll(): string[][];
 }

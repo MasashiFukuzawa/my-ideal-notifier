@@ -1,48 +1,19 @@
-declare var ideal: glFunctions.ClientInterface;
+import { IdealRepository } from './repository/ideal_repository';
+import { IdealApplicationService } from './application/service/ideal_application_service';
+import { Client } from './client/client';
 
-function postMessages(): void {
-  const items = ideal.getAll();
-  UrlFetchApp.fetch(LineConstants.PUSH_URL, setOptions(items));
+declare namespace glFunctions {
+  interface global {
+    main(): void;
+  }
 }
 
-function setOptions(items: string[][]): object {
-  const postData = setPostData(items);
-  const options = {
-    "method": "post",
-    "headers": LineConstants.HEADERS,
-    "payload": JSON.stringify(postData)
-  };
-  return options;
-}
+declare var global: glFunctions.global;
 
-function setPostData(items: string[][]): object {
-  const postData = {
-    "to": LineConstants.USER_ID,
-    "messages": [{
-      "type": "template",
-      "altText": "Today's mission statement",
-      "template": {
-        "type": "confirm",
-        "text": setText(items),
-        "actions": [
-          {
-              "type": "message",
-              "label": "OK",
-              "text": "Have a good day!"
-          },
-          {
-              "type": "message",
-              "label": "No thanks",
-              "text": "See you again!"
-          }
-        ],
-      },
-    }]
-  };
-  return postData;
-}
-
-function setText(items: string[][]): string {
-  const randomNumber = Math.floor(Math.random() * items.length);
-  return items.map(i => i[0])[randomNumber];
-}
+// 最終的にGAS側で `function main() {...}`という形に修正する必要あり
+global.main = (): void => {
+  const idealRepository = new IdealRepository();
+  const idealApplicationService = new IdealApplicationService(idealRepository);
+  const client = new Client(idealApplicationService);
+  client.postMessage();
+};
