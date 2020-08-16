@@ -1,9 +1,9 @@
-import { IdealRepository } from "../../../src/infrastructure/ideal_repository";
-import { IdealPushViewModel } from "../../../src/presentation/view_model/ideal_push_view_model";
-import { IdealPushInteractor } from "../../../src/domain/application/ideal_push_interactor";
-import { Ideal } from "../../../src/domain/model/ideal";
+import { IdealRepository } from "../../src/infrastructure/ideal_repository";
+import { IdealPushViewModel } from "../../src/presentation/view_model/ideal_push_view_model";
+import { IdealPushApplication } from "../../src/application/ideal_push_application";
+import { Ideal } from "../../src/domain/ideal";
 
-describe('IdealPushInteractor', () => {
+describe('IdealPushApplication', () => {
   SpreadsheetApp.openById = jest.fn(() => ({
     getSheetByName: jest.fn(() => ({
       getLastRow: jest.fn(() => 3),
@@ -14,7 +14,7 @@ describe('IdealPushInteractor', () => {
           [2, 'mission statement 2', 1],
           [3, 'mission statement 3', 0],
         ]),
-        setValues: jest.fn(),
+        setValue: jest.fn(),
       })),
     })),
   })) as any;
@@ -36,8 +36,8 @@ describe('IdealPushInteractor', () => {
     it('pushes messages successfully', () => {
       const idealRepository = new IdealRepository();
       const idealPushViewModel = new IdealPushViewModel();
-      const idealPushInteractor = new IdealPushInteractor(idealRepository, idealPushViewModel);
-      idealPushInteractor.handle();
+      const idealPushApplication = new IdealPushApplication(idealRepository, idealPushViewModel);
+      idealPushApplication.handle();
       expect(UrlFetchApp.fetch).toHaveBeenCalledTimes(1);
     });
   });

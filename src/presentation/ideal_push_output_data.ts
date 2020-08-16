@@ -1,4 +1,4 @@
-import { Ideal } from "../domain/model/ideal";
+import { Ideal } from "../domain/ideal";
 
 export class IdealPushOutputData {
   getMessage(nextItem: Ideal): string {
