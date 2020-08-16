@@ -1,15 +1,22 @@
-import { IdealRepositoryInterface } from '../domain/model/ideal_repository_interface';
-import Spreadsheet = GoogleAppsScript.Spreadsheet.Spreadsheet;
-import Sheet = GoogleAppsScript.Spreadsheet.Sheet;
+import { IdealRepositoryInterface } from '../domain/application/ideal_repository_interface';
+import { Ideal } from '../domain/model/ideal';
 
 export class IdealRepository implements IdealRepositoryInterface {
-  getAll(): string[][] {
-    const ss: Spreadsheet = SpreadsheetApp.openById(
+  getAll(): readonly Ideal[] {
+    const spreadsheet = SpreadsheetApp.openById(
       PropertiesService.getScriptProperties().getProperty("SPREAD_SHEET_ID")
     );
-    const ws: Sheet = ss.getSheetByName("mission_statements");
-    const lastRow: number = ws.getLastRow();
-    const allItems: string[][] = ws.getRange(2, 1, lastRow - 1, 1).getValues();
-    return allItems;
+    const sheet = spreadsheet.getSheetByName("mission_statements");
+    const lastRow = sheet.getLastRow();
+    const lastCol = sheet.getLastColumn();
+    const rawData = sheet.getRange(2, 1, lastRow - 1, lastCol).getValues();
+    const fullData = rawData.filter(e => !!e);
+    return this.map(fullData);
+  }
+
+  private map(fullData: any[][]): Ideal[] {
+    return fullData.map(e => {
+      return new Ideal(e[0], e[1], e[2]);
+    });
   }
 }

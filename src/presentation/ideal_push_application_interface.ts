@@ -1,3 +1,3 @@
 export interface IdealPushApplicationInterface {
-  getAll(): string[][];
+  handle(): void;
 }

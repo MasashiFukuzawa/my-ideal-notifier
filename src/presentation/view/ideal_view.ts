@@ -1,34 +1,31 @@
-import { IdealPushApplicationInterface } from '../controller/ideal_push_application_interface';
+import { Authorization } from "./authorization";
 
 export class IdealView {
-  constructor(
-    private idealApplicationService: IdealPushApplicationInterface
-  ) {}
+  PUSH_URL = "https://api.line.me/v2/bot/message/push";
 
-  postMessage(): void {
-    const items = this.idealApplicationService.getAll();
-    UrlFetchApp.fetch(Constants.PUSH_URL, this.setOptions(items));
+  pushMessage(message: string): void {
+    const auth = new Authorization();
+    const data = this.getPushData(message, auth.getUserId());
+    UrlFetchApp.fetch(this.PUSH_URL, this.setOptions(data, auth.getHeaders()));
   }
 
-  setOptions(items: string[][]): object {
-    const postData = this.setPostData(items);
-    const options = {
+  private setOptions(data: object, headers: object): object {
+    return {
       "method": "post",
-      "headers": Constants.HEADERS,
-      "payload": JSON.stringify(postData)
+      "headers": headers,
+      "payload": JSON.stringify(data)
     };
-    return options;
   }
 
-  setPostData(items: string[][]): object {
-    const postData = {
-      "to": Constants.USER_ID,
+  private getPushData(message: string, userId: string): object {
+    return {
+      "to": userId,
       "messages": [{
         "type": "template",
         "altText": "Today's mission statement",
         "template": {
           "type": "confirm",
-          "text": this.setText(items),
+          "text": message,
           "actions": [
             {
                 "type": "message",
@@ -44,11 +41,5 @@ export class IdealView {
         },
       }]
     };
-    return postData;
-  }
-
-  setText(items: string[][]): string {
-    const randomNumber = Math.floor(Math.random() * items.length);
-    return items.map(i => i[0])[randomNumber];
   }
 }
