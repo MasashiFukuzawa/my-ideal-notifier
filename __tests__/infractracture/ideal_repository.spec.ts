@@ -1,4 +1,4 @@
-import { IdealRepository } from "../../src/repository/ideal_repository";
+import { IdealRepository } from "../../src/infrastructure/ideal_repository";
 
 describe('IdealRepository', () => {
   SpreadsheetApp.openById = jest.fn(() => ({

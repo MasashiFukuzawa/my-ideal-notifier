@@ -1,8 +1,8 @@
-import { IdealRepository } from "../../src/repository/ideal_repository";
-import { IdealApplicationService } from "../../src/application/service/ideal_application_service";
-import { Client } from "../../src/client/client";
+import { IdealRepository } from "../../../src/infrastructure/ideal_repository";
+import { IdealPushInteractor } from "../../../src/domain/application/ideal_push_interactor";
+import { IdealView } from "../../../src/presentation/view/ideal_view";
 
-describe('Client', () => {
+describe('IdealPushInteractor', () => {
   SpreadsheetApp.openById = jest.fn(() => ({
     getSheetByName: jest.fn(() => ({
       getLastRow: jest.fn(() => 4),
@@ -33,9 +33,9 @@ describe('Client', () => {
 
     it('pushes messages successfully', () => {
       const idealRepository = new IdealRepository();
-      const idealApplicationService = new IdealApplicationService(idealRepository);
-      const client = new Client(idealApplicationService);
-      client.postMessage();
+      const idealApplicationService = new IdealPushInteractor(idealRepository);
+      const idealView = new IdealView(idealApplicationService);
+      idealView.postMessage();
       expect(UrlFetchApp.fetch).toHaveBeenCalledTimes(1);
     });
   });

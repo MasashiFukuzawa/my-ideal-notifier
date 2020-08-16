@@ -1,4 +1,4 @@
-import { IdealRepositoryInterface } from '../interface/ideal/ideal_repository_interface';
+import { IdealRepositoryInterface } from '../domain/model/ideal_repository_interface';
 import Spreadsheet = GoogleAppsScript.Spreadsheet.Spreadsheet;
 import Sheet = GoogleAppsScript.Spreadsheet.Sheet;
 

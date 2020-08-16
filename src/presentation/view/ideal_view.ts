@@ -1,20 +1,20 @@
-import { IdealApplicationServiceInterface } from '../interface/ideal/ideal_application_service_interface';
+import { IdealPushApplicationInterface } from '../controller/ideal_push_application_interface';
 
-export class Client {
+export class IdealView {
   constructor(
-    private idealApplicationService: IdealApplicationServiceInterface
+    private idealApplicationService: IdealPushApplicationInterface
   ) {}
 
   postMessage(): void {
     const items = this.idealApplicationService.getAll();
-    UrlFetchApp.fetch(LineConstants.PUSH_URL, this.setOptions(items));
+    UrlFetchApp.fetch(Constants.PUSH_URL, this.setOptions(items));
   }
 
   setOptions(items: string[][]): object {
     const postData = this.setPostData(items);
     const options = {
       "method": "post",
-      "headers": LineConstants.HEADERS,
+      "headers": Constants.HEADERS,
       "payload": JSON.stringify(postData)
     };
     return options;
@@ -22,7 +22,7 @@ export class Client {
 
   setPostData(items: string[][]): object {
     const postData = {
-      "to": LineConstants.USER_ID,
+      "to": Constants.USER_ID,
       "messages": [{
         "type": "template",
         "altText": "Today's mission statement",
