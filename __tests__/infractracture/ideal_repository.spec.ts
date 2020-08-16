@@ -1,5 +1,4 @@
 import { IdealRepository } from "../../src/infrastructure/ideal_repository";
-import { Ideal } from "../../src/domain/ideal";
 
 describe('IdealRepository', () => {
   SpreadsheetApp.openById = jest.fn(() => ({
@@ -27,9 +26,9 @@ describe('IdealRepository', () => {
     it('returns all data in ideals table', () => {
       const data = idealRepository.getAll();
       expect(data).toStrictEqual([
-        new Ideal(1, 'mission statement 1', 0),
-        new Ideal(2, 'mission statement 2', 1),
-        new Ideal(3, 'mission statement 3', 0),
+        [1, 'mission statement 1', 0],
+        [2, 'mission statement 2', 1],
+        [3, 'mission statement 3', 0],
       ]);
     });
   });

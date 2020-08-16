@@ -1,8 +1,7 @@
+import { Ideal } from "../../src/domain/ideal";
 import { IdealRepository } from "../../src/infrastructure/ideal_repository";
-import { IdealPushViewModel } from "../../src/presentation/view_model/ideal_push_view_model";
-import { IdealPushApplication } from "../../src/application/ideal_push_application";
 
-describe('IdealPushApplication', () => {
+describe('Ideal', () => {
   SpreadsheetApp.openById = jest.fn(() => ({
     getSheetByName: jest.fn(() => ({
       getLastRow: jest.fn(() => 3),
@@ -22,9 +21,9 @@ describe('IdealPushApplication', () => {
     getProperty: jest.fn(() => 'xxxxxxx'),
   })) as any;
 
-  UrlFetchApp.fetch = jest.fn();
+  const idealRepository = new IdealRepository();
 
-  describe('handle', () => {
+  describe('getTargetIdeal', () => {
     jest.spyOn(IdealRepository.prototype, 'getAll')
       .mockReturnValue([
         [1, 'mission statement 1', 0],
@@ -32,12 +31,19 @@ describe('IdealPushApplication', () => {
         [3, 'mission statement 3', 0],
       ]);
 
-    it('pushes messages successfully', () => {
-      const idealRepository = new IdealRepository();
-      const idealPushViewModel = new IdealPushViewModel();
-      const idealPushApplication = new IdealPushApplication(idealRepository, idealPushViewModel);
-      idealPushApplication.handle();
-      expect(UrlFetchApp.fetch).toHaveBeenCalledTimes(1);
+    it('returns target ideal with push flag', () => {
+      const ideal = new Ideal(idealRepository);
+      const targetIdeal = ideal.getTargetIdeal();
+      expect(targetIdeal).toStrictEqual(new Ideal(idealRepository, 2, 'mission statement 2', 1));
+    });
+  });
+
+  describe('renewPushFlag', () => {
+    it('calls update method twice', () => {
+      const ideal = new Ideal(idealRepository, 2, 'mission statement 2', 1);
+      const updateSpy = jest.spyOn(IdealRepository.prototype, 'update').mockReturnValue(true);
+      ideal.renewPushFlag();
+      expect(updateSpy).toHaveBeenCalledTimes(2);
     });
   });
 });

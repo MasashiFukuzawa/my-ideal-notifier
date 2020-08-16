@@ -1,12 +1,11 @@
-import { IdealRepositoryInterface } from '../application/ideal_repository_interface';
-import { Ideal } from '../domain/ideal';
+import { IdealRepositoryInterface } from '../domain/ideal_repository_interface';
 import Sheet = GoogleAppsScript.Spreadsheet.Sheet;
 
 export class IdealRepository implements IdealRepositoryInterface {
   private readonly sheet: Sheet;
   private readonly lastRow: number;
   private readonly lastCol: number;
-  private readonly fullData: readonly Ideal[];
+  private readonly fullData: readonly any[][];
   constructor() {
     this.sheet = this.getSheet();
     this.lastRow = this.getLastRow();
@@ -14,11 +13,10 @@ export class IdealRepository implements IdealRepositoryInterface {
     this.fullData = this.getAll();
   }
 
-  getAll(): readonly Ideal[] {
+  getAll(): readonly any[][] {
     if (this.fullData) return this.fullData;
     const rawData = this.sheet.getRange(2, 1, this.lastRow - 1, this.lastCol).getValues();
-    const fullData = rawData.filter(e => !!e[0]);
-    return this.map(fullData);
+    return rawData.filter(e => !!e[0]);
   }
 
   count(): number {
@@ -50,11 +48,5 @@ export class IdealRepository implements IdealRepositoryInterface {
   private getLastColumn(): number {
     if (this.lastCol) return this.lastCol;
     return this.sheet.getLastColumn();
-  }
-
-  private map(fullData: any[][]): Ideal[] {
-    return fullData.map(e => {
-      return new Ideal(e[0], e[1], e[2]);
-    });
   }
 }
