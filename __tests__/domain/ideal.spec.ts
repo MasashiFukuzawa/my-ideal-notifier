@@ -23,7 +23,7 @@ describe('Ideal', () => {
 
   const idealRepository = new IdealRepository();
 
-  describe('getTargetIdeal', () => {
+  describe('getIdealToPush', () => {
     jest.spyOn(IdealRepository.prototype, 'getAll')
       .mockReturnValue([
         [1, 'mission statement 1', 0],
@@ -32,15 +32,14 @@ describe('Ideal', () => {
       ]);
 
     it('returns target ideal with push flag', () => {
-      const ideal = new Ideal(idealRepository);
-      const targetIdeal = ideal.getTargetIdeal();
-      expect(targetIdeal).toStrictEqual(new Ideal(idealRepository, 2, 'mission statement 2', 1));
+      const targetIdeal = Ideal.getIdealToPush(idealRepository);
+      expect(targetIdeal).toStrictEqual(new Ideal(2, 'mission statement 2', 1, idealRepository));
     });
   });
 
   describe('renewPushFlag', () => {
     it('calls update method twice', () => {
-      const ideal = new Ideal(idealRepository, 2, 'mission statement 2', 1);
+      const ideal = new Ideal(2, 'mission statement 2', 1, idealRepository);
       const updateSpy = jest.spyOn(IdealRepository.prototype, 'update').mockReturnValue(true);
       ideal.renewPushFlag();
       expect(updateSpy).toHaveBeenCalledTimes(2);

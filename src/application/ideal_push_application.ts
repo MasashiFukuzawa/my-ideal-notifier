@@ -11,8 +11,7 @@ export class IdealPushApplication implements IdealPushApplicationInterface {
   ) {}
 
   handle(): void {
-    const initIdeal = new Ideal(this.idealRepository);
-    const ideal = initIdeal.getTargetIdeal();
+    const ideal = Ideal.getIdealToPush(this.idealRepository);
     const outputData = new IdealPushOutputData();
     const message = outputData.getMessage(ideal);
     this.idealViewModel.pushMessage(message);

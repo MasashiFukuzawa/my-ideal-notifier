@@ -4,20 +4,20 @@ import { IdealItem } from "./value_object/ideal_item";
 import { IdealPushFlag } from "./value_object/ideal_push_flag";
 
 export class Ideal {
-  private readonly idealRepository: IdealRepositoryInterface;
   private readonly id: IdealId;
   private readonly item: IdealItem;
   private readonly pushFlag: IdealPushFlag;
-  constructor(idealRepository: IdealRepositoryInterface, id?: number, item?: string, pushFlag?: number) {
-    this.idealRepository = idealRepository;
-    if (!!id) this.id = new IdealId(id);
-    if (!!item) this.item = new IdealItem(item);
-    if (!!pushFlag) this.pushFlag = new IdealPushFlag(pushFlag);
+  private readonly idealRepository: IdealRepositoryInterface;
+  constructor(id: number, item: string, pushFlag: number, idealRepository?: IdealRepositoryInterface) {
+    this.id = new IdealId(id);
+    this.item = new IdealItem(item);
+    this.pushFlag = new IdealPushFlag(pushFlag);
+    if (!!idealRepository) this.idealRepository = idealRepository;
   }
 
-  getTargetIdeal(): Ideal {
-    const fullData = this.idealRepository.getAll();
-    const mappedFullData = this.map(fullData);
+  static getIdealToPush(idealRepository: IdealRepositoryInterface): Ideal {
+    const fullData = idealRepository.getAll();
+    const mappedFullData = this.map(fullData, idealRepository);
     return mappedFullData.filter(e => e.hasPushFlag())[0];
   }
 
@@ -41,9 +41,9 @@ export class Ideal {
     return this.pushFlag;
   }
 
-  private map(fullData: readonly any[][]): Ideal[] {
+  private static map(fullData: readonly any[][], idealRepository: IdealRepositoryInterface): Ideal[] {
     return fullData.map(e => {
-      return new Ideal(this.idealRepository, e[0], e[1], e[2]);
+      return new Ideal(e[0], e[1], e[2], idealRepository);
     });
   }
 
