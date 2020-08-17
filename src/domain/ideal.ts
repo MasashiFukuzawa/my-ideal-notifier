@@ -8,11 +8,11 @@ export class Ideal {
   private readonly item: IdealItem;
   private readonly pushFlag: IdealPushFlag;
   private readonly idealRepository: IdealRepositoryInterface;
-  constructor(id: number, item: string, pushFlag: number, idealRepository?: IdealRepositoryInterface) {
+  constructor(id: number, item: string, pushFlag: number, idealRepository: IdealRepositoryInterface) {
     this.id = new IdealId(id);
     this.item = new IdealItem(item);
     this.pushFlag = new IdealPushFlag(pushFlag);
-    if (!!idealRepository) this.idealRepository = idealRepository;
+    this.idealRepository = idealRepository;
   }
 
   static getIdealToPush(idealRepository: IdealRepositoryInterface): Ideal {
